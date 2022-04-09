@@ -1,67 +1,45 @@
-// import {
-//   ICreateUserRepo,
-//   IGetProfileByIdRepo,
-//   IGetSectorByIdRepo,
-//   IGetUserByEmailRepo,
-//   IGetUserByIdRepo,
-//   IGetUsersRepo,
-//   IUpdateUserRepo
-// } from '../data/interfaces/'
-// import { IUpdateUserPasswordRepo } from '../data/interfaces/updateUserPassword'
-// import { DBCreateUser, DBGetUserByEmail, DBGetUsers, DBUpdateUser, FillUserWithAssociations } from '../data/user/'
-// import { DBUpdateUserPassword } from '../data/user/dbUpdateUserPassword'
-// import { IFillUserWithAssociations } from '../domain/user/use-cases/fillUserWithAssociations'
-// import { ProfilePostgresRepo } from '../infra/profile/profilePostgresRepo'
-// import { SectorPostgresRepo } from '../infra/sector/sectorPostgresRepo'
-// import { UserPostgresRepo } from '../infra/user/userPostgresRepo'
-// import {
-//   CreateUserController,
-//   GetUserByEmailController,
-//   GetUsersController,
-//   UpdateUserController
-// } from '../presentation/controllers/user'
-// import { UpdateUserPasswordController } from '../presentation/controllers/user/updateUserPassword'
-// import { IController } from '../presentation/interfaces/controller'
 
-// export const makeFillUserWithAssociations = (): IFillUserWithAssociations => {
-//   const getUserById: IGetUserByIdRepo = new UserPostgresRepo()
-//   const getSectorById: IGetSectorByIdRepo = new SectorPostgresRepo()
-//   const getProfileById: IGetProfileByIdRepo = new ProfilePostgresRepo()
-//   return new FillUserWithAssociations(getSectorById, getProfileById, getUserById)
-// }
 
-// export const makeCreateUser = (): IController => {
-//   const createUserRepo: ICreateUserRepo = new UserPostgresRepo()
-//   const getUserByEmailRepo: IGetUserByEmailRepo = new UserPostgresRepo()
-//   const dbGetUserByEmail = new DBGetUserByEmail(getUserByEmailRepo)
-//   const dbCreateUser = new DBCreateUser(createUserRepo)
-//   const fillUserWithAssociations = makeFillUserWithAssociations()
-//   return new CreateUserController(dbCreateUser, dbGetUserByEmail, fillUserWithAssociations)
-// }
+import { config } from '../config/config';
+import { RequestAdapter } from '../infra/requester-adapter';
+import { CreateUserController } from '../presentation/controllers/user/createUser';
+import { GetUserByEmailController } from '../presentation/controllers/user/getUserByEmail';
+import { GetUsersController } from '../presentation/controllers/user/getUsers';
+import { UpdateUserController } from '../presentation/controllers/user/updateUser';
+import { UpdateUserPasswordController } from '../presentation/controllers/user/updateUserPassword';
+import { IController } from '../presentation/interfaces/controller'
 
-// export const makeGetUserByEmail = (): IController => {
-//   const getUserByEmailRepo: IGetUserByEmailRepo = new UserPostgresRepo()
-//   const dbGetUserByEmail = new DBGetUserByEmail(getUserByEmailRepo)
-//   return new GetUserByEmailController(dbGetUserByEmail)
-// }
+const { usersProfileServer } = config;
 
-// export const makeGetUsers = (): IController => {
-//   const getUsersRepo: IGetUsersRepo = new UserPostgresRepo()
-//   const dbGetUsers = new DBGetUsers(getUsersRepo)
-//   return new GetUsersController(dbGetUsers)
-// }
+const headers = {
+  "api-key": usersProfileServer.apiKey
+}
 
-// export const makeUpdateUser = (): IController => {
-//   const updateUserRepo: IUpdateUserRepo = new UserPostgresRepo()
-//   const dbGetUsers = new DBUpdateUser(updateUserRepo)
-//   const getUserByEmailRepo: IGetUserByEmailRepo = new UserPostgresRepo()
-//   const dbGetUserByEmail = new DBGetUserByEmail(getUserByEmailRepo)
-//   return new UpdateUserController(dbGetUsers, dbGetUserByEmail)
-// }
+const getLocationUrl = (): string => {
+  return `${usersProfileServer.baseUrl}:${usersProfileServer.port}/api/v1`
+}
 
-// export const makeUpdateUserPassword = (): IController => {
-//   const updateUserPasswordRepo: IUpdateUserPasswordRepo = new UserPostgresRepo()
-//   const getUserById: IGetUserByIdRepo = new UserPostgresRepo()
-//   const dbUpdateUserPassword = new DBUpdateUserPassword(updateUserPasswordRepo, getUserById)
-//   return new UpdateUserPasswordController(dbUpdateUserPassword)
-// }
+export const makeCreateUser = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers });
+  return new CreateUserController(requester)
+}
+
+export const makeGetUserByEmail = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers })
+  return new GetUserByEmailController(requester)
+}
+
+export const makeGetUsers = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers })
+  return new GetUsersController(requester)
+}
+
+export const makeUpdateUser = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers });
+  return new UpdateUserController(requester)
+}
+
+export const makeUpdateUserPassword = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers });
+  return new UpdateUserPasswordController(requester)
+}

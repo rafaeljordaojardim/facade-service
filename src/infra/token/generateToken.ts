@@ -1,13 +1,14 @@
-// import { IGenerateTokenRepo } from '../../data/interfaces/'
-// import jwt from 'jsonwebtoken'
+import { IGenerateTokenRepo } from '../../data/interfaces/generateToken'
+import jwt from 'jsonwebtoken'
+import { config } from '../../config/config'
 
-// export class GenerateTokenRepo implements IGenerateTokenRepo {
-//   private readonly secret = (process.env.JWT_SECRET_KEY != null) ? process.env.JWT_SECRET_KEY : '123456'
-//   public generate (email: string, data: any): string {
-//     return jwt.sign({ email, data }, this.secret)
-//   }
+export class GenerateTokenRepo implements IGenerateTokenRepo {
 
-//   public verify (token: string): any {
-//     return jwt.verify(token, this.secret)
-//   }
-// }
+  public generate (email: string, data: any): string {
+    return jwt.sign({ email, data }, config.server.jwtKey)
+  }
+
+  public verify (token: string): any {
+    return jwt.verify(token, config.server.jwtKey)
+  }
+}

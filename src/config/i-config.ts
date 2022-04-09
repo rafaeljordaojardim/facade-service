@@ -7,5 +7,8 @@ interface IServer {
 export interface IConfig {
   sectorLocationServer: IServer;
   usersProfileServer: IServer;
-  server: IServer;
+  server: {
+    port: number;
+    jwtKey: string;
+  };
 }

@@ -1,16 +1,21 @@
-// import { IGenerateTokenRepo, IGetUserByEmailRepo } from '../data/interfaces'
-// import { DBSignInUser } from '../data/user/dbSignIn'
-// import { UserPostgresRepo } from '../infra/user/userPostgresRepo'
-// import { SignInController } from '../presentation/controllers/user/signin'
-// import { IController } from '../presentation/interfaces/controller'
-// import { GenerateTokenRepo } from '../infra/token/generateToken'
-// import { ActionProfilePostgresRepo } from '../infra/action-profile/actionProfilePostgresRepo'
-// import { IGetActionsFromProfileRepo } from '../data/interfaces/getActionsFromProfile'
+import { SignInController } from '../presentation/controllers/user/signin'
+import { IController } from '../presentation/interfaces/controller'
+import { RequestAdapter } from '../infra/requester-adapter'
+import { config } from '../config/config'
+import { GenerateTokenRepo } from '../infra/token/generateToken';
 
-// export const makeSignInUser = (): IController => {
-//   const generateToken: IGenerateTokenRepo = new GenerateTokenRepo()
-//   const getUserByEmailRepo: IGetUserByEmailRepo = new UserPostgresRepo()
-//   const getActionsFromProfileId: IGetActionsFromProfileRepo = new ActionProfilePostgresRepo()
-//   const dbGetUserByEmail = new DBSignInUser(getUserByEmailRepo, generateToken, getActionsFromProfileId)
-//   return new SignInController(dbGetUserByEmail)
-// }
+const { usersProfileServer } = config;
+
+const headers = {
+  "api-key": usersProfileServer.apiKey
+}
+
+const getLocationUrl = (): string => {
+  return `${usersProfileServer.baseUrl}:${usersProfileServer.port}/api/v1`
+}
+
+export const makeSignInUser = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers });
+  const tokenGenerator = new GenerateTokenRepo()
+  return new SignInController(requester, tokenGenerator)
+}

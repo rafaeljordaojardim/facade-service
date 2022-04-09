@@ -14,6 +14,7 @@ export const config = {
     port: getenv.int("USERS_PROFILE_PORT")
   },
   server: {
-    port: getenv.int("PORT")
+    port: getenv.int("PORT"),
+    jwtKey: getenv.string("JWT_SECRET_KEY")
   }
 } as IConfig;

@@ -5,11 +5,12 @@ import { IResponse } from '../../interfaces/response'
 import { Request, Response } from 'express'
 import { IRequester } from '../../../data/requester'
 
-export class ListSectorsController implements IController {
+export class GetSectorByIdController implements IController {
   constructor (private requester: IRequester) {}
   public async handle (req: Request, res: Response): Promise<IResponse> {
     try {
-      const response = await this.requester.request({ method: "GET", url: "/sectors" })
+      const id = Number(req.params.id)
+      const response = await this.requester.request({ method: "GET", url: `/sectors/${id}` })
       return response
     } catch (error) {
       console.error(`Error listing sectors: ${String(error)}`)
