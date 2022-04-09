@@ -8,6 +8,11 @@ export const config = {
     baseUrl: getenv.string("SECTOR_LOCATION_BASE_URL"),
     port: getenv.int("SECTOR_LOCATION_PORT")
   },
+  usersProfileServer: {
+    apiKey: getenv.string("USERS_PROFILE_API_KEY"),
+    baseUrl: getenv.string("USERS_PROFILE_BASE_URL"),
+    port: getenv.int("USERS_PROFILE_PORT")
+  },
   server: {
     port: getenv.int("PORT")
   }

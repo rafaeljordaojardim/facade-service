@@ -1,50 +1,39 @@
-// import { DBCreateProfile } from '../data/profile/dbCreateProfile'
-// import { ActionPostgresRepo } from '../infra/action/actionPostgresRepo'
-// import { CreateProfileController } from '../presentation/controllers/profile/createProfile'
-// import { IController } from '../presentation/interfaces/controller'
-// import { UpdateProfileController } from '../presentation/controllers/profile/updateProfile'
-// import { ListProfilesController } from '../presentation/controllers/profile/listProfiles'
 
-// import { ListCustomProfilesController } from '../presentation/controllers/profile/listCustomProfile'
+import { config } from '../config/config';
+import { RequestAdapter } from '../infra/requester-adapter';
+import { CreateProfileController } from '../presentation/controllers/profile/createProfile'
+import { ListCustomProfilesController } from '../presentation/controllers/profile/listCustomProfile';
+import { ListProfilesController } from '../presentation/controllers/profile/listProfiles';
+import { UpdateProfileController } from '../presentation/controllers/profile/updateProfile';
+import { IController } from '../presentation/interfaces/controller'
 
-// export const makeCreateProfile = (): IController => {
-//   const createProfileRepo: ICreateProfileRepo = new ProfilePostgresRepo()
-//   const getActionByNumberRepo = new ActionPostgresRepo()
-//   const createActionProfileRepo = new ActionProfilePostgresRepo()
-//   const dbCreateProfile = new DBCreateProfile(createProfileRepo, getActionByNumberRepo, createActionProfileRepo)
-//   return new CreateProfileController(dbCreateProfile)
-// }
 
-// export const makeUpdateProfile = (): IController => {
-//   const updateProfileRepo: IUpdateProfileRepo = new ProfilePostgresRepo()
-//   const getActionByNumberRepo = new ActionPostgresRepo()
-//   const createActionProfileRepo = new ActionProfilePostgresRepo()
-//   const getProfileById: IGetProfileByIdRepo = new ProfilePostgresRepo()
-//   const deleteAllActionsFromProfile: IDeleteAllActionsFromProfileRepo = new ActionProfilePostgresRepo()
-//   const dbUpdateProfile = new DBUpdateProfile(
-//     updateProfileRepo,
-//     deleteAllActionsFromProfile,
-//     getActionByNumberRepo,
-//     createActionProfileRepo,
-//     getProfileById
-//   )
-//   return new UpdateProfileController(dbUpdateProfile)
-// }
+const { usersProfileServer } = config;
 
-// export const makeListProfiles = (): IController => {
-//   const getProfilesRepo: IGetProfilesRepo = new ProfilePostgresRepo()
-//   const dbListProfiles = new DBListProfiles(getProfilesRepo)
-//   return new ListProfilesController(dbListProfiles)
-// }
+const headers = {
+  "api-key": usersProfileServer.apiKey
+}
 
-// export const makeListCustomProfiles = (): IController => {
-//   const getProfilesRepo: IGetProfilesRepo = new ProfilePostgresRepo()
-//   const getUsersFromProfile: IGetUsersFromProfileRepo = new UserPostgresRepo()
-//   const getActionsFromProfile: IGetActionsFromProfileRepo = new ActionProfilePostgresRepo()
-//   const dbListCustomProfiles = new DBListProfilesCustom(
-//     getProfilesRepo,
-//     getUsersFromProfile,
-//     getActionsFromProfile
-//   )
-//   return new ListCustomProfilesController(dbListCustomProfiles)
-// }
+const getLocationUrl = (): string => {
+  return `${usersProfileServer.baseUrl}:${usersProfileServer.port}/api/v1`
+}
+
+export const makeCreateProfile = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers });
+  return new CreateProfileController(requester)
+}
+
+export const makeUpdateProfile = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers });
+  return new UpdateProfileController(requester)
+}
+
+export const makeListProfiles = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers });
+  return new ListProfilesController(requester)
+}
+
+export const makeListCustomProfiles = (): IController => {
+  const requester = new RequestAdapter({ baseURL: getLocationUrl(), headers });
+  return new ListCustomProfilesController(requester)
+}

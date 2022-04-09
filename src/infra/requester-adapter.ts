@@ -10,7 +10,7 @@ export class RequestAdapter implements IRequester {
 
   public async request (options: IOptions): Promise<IResponse> {
     const {body} = options;
-    return axios.request({ 
+    return await axios.request({ 
      ...this.options, ...options, data: body
     });
   }

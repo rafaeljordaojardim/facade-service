@@ -1,10 +1,11 @@
+
+interface IServer {
+  baseUrl: string;
+  apiKey: string;
+  port: number;
+}
 export interface IConfig {
-  sectorLocationServer: {
-    baseUrl: string;
-    apiKey: string;
-    port: number;
-  };
-  server: {
-    port: number;
-  }
+  sectorLocationServer: IServer;
+  usersProfileServer: IServer;
+  server: IServer;
 }
